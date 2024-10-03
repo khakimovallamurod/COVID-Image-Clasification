@@ -1,6 +1,4 @@
-from ultralytics import YOLO # type: ignore
 from flask import Flask, send_file, render_template, request, redirect
-import cv2
 from test_model import image_clasification
 import os
 
@@ -12,19 +10,15 @@ RESULT_FOLDER = 'static/result/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['RESULT_FOLDER'] = RESULT_FOLDER
 
-# Yuklash uchun ruxsat etilgan fayl turlari
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-# Fayl turi ruxsat etilganmi, tekshirish funktsiyasi
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Bosh sahifa (yuklash sahifasi)
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Tasvirni yuklash va saqlash jarayoni
 @app.route('/upload', methods=['POST'])
 def upload_image():
     if 'image' not in request.files:
@@ -47,3 +41,4 @@ def upload_image():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
