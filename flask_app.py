@@ -1,28 +1,49 @@
 from ultralytics import YOLO # type: ignore
-from flask import Flask, send_file # type: ignore
-import matplotlib.pyplot as plt # type: ignore
-import numpy as np # type: ignore
-import cv2 # type: ignore
+from flask import Flask, send_file, render_template, request, redirect
+import cv2
+from test_model import image_clasification
 import os
-
-# Load the YOLO model
-model = YOLO("yolov8n-cls.yaml")
 
 app = Flask(__name__)
 
-@app.route('/image/<type>/<path>', methods=['GET'])
-def image_classification(type, path: str):
-    image_path = f"dataset/train/{type}/{path}"
-    print(image_path)
-    results = model(image_path)
+UPLOAD_FOLDER = 'static/uploads/'
+RESULT_FOLDER = 'static/result/'
 
-    image = results[0].orig_img
-    # for pred in results[0]:
-    #     print(pred)
-    temp_image_path = "temp_image.png"
-    cv2.imwrite(temp_image_path, image)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['RESULT_FOLDER'] = RESULT_FOLDER
+
+# Yuklash uchun ruxsat etilgan fayl turlari
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# Fayl turi ruxsat etilganmi, tekshirish funktsiyasi
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Bosh sahifa (yuklash sahifasi)
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+# Tasvirni yuklash va saqlash jarayoni
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    if 'image' not in request.files:
+        return redirect(request.url)
     
-    return send_file(temp_image_path, mimetype='image/png') 
+    file = request.files['image']
+    if file.filename == '':
+        return redirect(request.url)
+   
+    if file and allowed_file(file.filename):
+        filename = file.filename
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        result_image_pth = os.path.join(app.config['RESULT_FOLDER'], filename)
+        file.save(filepath)
+        image_clasification(image_path = filepath, output_image = result_image_pth)
+
+        return send_file(result_image_pth, mimetype='image/png') 
+    
+    return 'Ruxsat etilmagan fayl turi'
 
 if __name__ == '__main__':
-    app.run(debug=True, port=7080)
+    app.run(debug=True, port=5000)
