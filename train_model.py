@@ -4,6 +4,6 @@ from ultralytics import YOLO  # type: ignore
 model = YOLO('yolov8n-cls.pt')
 model.train(
     data = 'dataset',
-    epochs = 200, 
+    epochs = 300, 
     imgsz = 224
 )
