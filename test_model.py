@@ -2,7 +2,7 @@ from ultralytics import YOLO # type: ignore
 import cv2
 
 # load model
-model = YOLO('runs/classify/train/weights/best.pt')
+model = YOLO('best.pt')
 
 def image_clasification(image_path, output_image):
     image = cv2.imread(image_path)
