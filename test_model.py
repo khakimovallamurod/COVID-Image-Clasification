@@ -1,11 +1,24 @@
-from ultralytics import YOLO # type: ignore
-import cv2
+from ultralytics import YOLO
+import json
 
-# load model
 model = YOLO('best.pt')
 
-def image_clasification(image_path, output_image):
-    image = cv2.imread(image_path)
-    results = model(image)
+def image_classification(image):
 
-    results[0].save(filename = output_image)
+    results = model(image)
+    probs = results[0].probs
+
+    clasification = []
+    if probs is not None:
+        top5_indices = probs.top5
+        top5_confidences = probs.top5conf
+
+        for idx in top5_indices:
+            label = model.names[idx] 
+            confidence = top5_confidences[top5_indices.index(idx)].item()  
+            clasification.append({
+                "label": label,
+                "confidence": round(float(confidence), 2)
+            })
+    
+    return json.dumps(clasification, indent=4) 
