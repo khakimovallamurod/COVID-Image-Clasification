@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 import json
 
-model = YOLO('best.pt')
 
-def image_classification(image):
-
+def image_classification(model_path, image):
+    
+    model = YOLO(model=model_path)
     results = model(image)
     probs = results[0].probs
 
