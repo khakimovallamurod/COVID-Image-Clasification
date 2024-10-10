@@ -13,6 +13,7 @@ def welcome():
 @app.route('/image', methods=['POST'])
 def main():
     image = request.files['file']
+    # Your  model trained with 4 classes is path
     model_path = 'four_classes.pt'
     image_data = Image.open(image.stream)
 
@@ -23,6 +24,7 @@ def main():
 @app.route('/iscovid', methods=['POST'])
 def iscovid_check():
     image = request.files['file']
+    # Your  model trained with 2 classes is path (check Covid).
     model_path = 'is_covid.pt'
     image_data = Image.open(image.stream)
 
