@@ -34,3 +34,6 @@ To start the local API and get classification results, run the Flask application
 ```bash 
 python flask_app.py
 ```
+## COVID-19 Detection Using Chest X-Ray Images
+This project involves the classification of chest X-ray images to identify whether an image is of the chest and determine the likelihood of COVID-19 infection. 
+![Chest X-Ray Detection](check_covid.jpg)
